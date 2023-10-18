@@ -19,9 +19,8 @@ It can be configured in code itself by mentioning Dispatcher.
 
 Three type of Dispatchers / Provides CoroutineContext
 Main - UI Thread
-IO - CPU Intensive work
-Default - Network Calls
-
+IO - Network Calls/Disk Read/Write
+Default - CPU Intensive work
 
 Coroutine Builders: coroutines can be launched using coroutine builders. 
 1. launch - Job - doesnot return result
@@ -33,12 +32,38 @@ Coroutine Builders: coroutines can be launched using coroutine builders.
       for ex if we want to send data back to UI, we need Main Thread Context. using withcontext we can switch context.
       Syntax:  withcontext(Dispatchers.Main) {}
 
+Coroutines - any failure in child coroutine, will cancel parent coroutine and all the other child coroutine.
+two ways to launch coroutines.
 
-coroutines - any failure in child coroutine, will cancel parent coroutine and all the other child coroutine.
-two ways to launch coroutines
-
+supervisorScope{} - to avoid cancellation of parent and its child coroutines, we can use supervisorscope.
+                  cancellation will not escalate up to cancel parent.
+                  
+CoroutineScope:
+coroutines needs context. coroutinescope provides context to coroutine to run. 
 CoroutineScope(coroutinecontext){launch/await/withcontext} - based on the context.
-
 GlobalScope - Runs Globally. Cancelled when application is destroyed.
+viewmodlescope
+lifecyclescope
 
 CoroutineScope(GlobalScope/CoroutineScope/ViewModelScope/LifecycleScope) -> CoroutineContext(Dispatchers.Main/IO/Default) -> CoroutineBuilders(launch/await/withcontext) -> Job/Deferred
+
+
+Job:
+States: New/Active/Cancelling/Completing/Completed/Cancelled
+
+Return below boolean
+isActive - Active/Completing
+isCompleted - completed/cancelled
+isCancelled - cancelling/cancelled
+
+syntax: job().isActive()
+
+when the cancel is called, it will enter into cancelling state first, then move to cancelling state.
+join - launch{}.join() - after the completion of this coroutine only, next coroutines will be executed. 
+cancel - come out and stop everything immediately even if its in cancelling state. 
+cancelAndJoin - Cancel and wait for the job to enter Cancelled state. 
+
+for async{} also we can use join to complete the job and also we can use await() to wait and get the result. 
+launch{}.join = async{}.await()
+
+
