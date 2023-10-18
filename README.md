@@ -21,6 +21,7 @@ Three type of Dispatchers / Provides CoroutineContext
 Main - UI Thread
 IO - Network Calls/Disk Read/Write
 Default - CPU Intensive work
+Unconfined - Not confined to particluar threadpool (IO/Default/Main). Initially launch in the currentthread. resumes in the available thread. 
 
 Coroutine Builders: coroutines can be launched using coroutine builders. 
 1. launch - Job - doesnot return result
@@ -47,6 +48,10 @@ lifecyclescope
 
 CoroutineScope(GlobalScope/CoroutineScope/ViewModelScope/LifecycleScope) -> CoroutineContext(Dispatchers.Main/IO/Default) -> CoroutineBuilders(launch/await/withcontext) -> Job/Deferred
 
+CoroutineBuilders accept CoroutineStart values. It determines when to start the corroutines.
+CoroutineStart.Default - starts auto
+Lazy - need to start explicitly
+Atomic - start auto
 
 Job:
 States: New/Active/Cancelling/Completing/Completed/Cancelled
