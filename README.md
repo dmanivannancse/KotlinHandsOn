@@ -5,11 +5,13 @@ inline function
   syntax: inline fun getValue(): String{} 
   
 scope function - perform actions on an object. inside we can access the objects properties.
-let - it - can be used to replace if not null condition. 
-run - 
-also 
-apply
-with
+// apply - returns the same object. access without 'it' or 'this'.
+// also - return the same object. access with 'it'
+// let - doesn't return. access with 'it'
+// run - doesn't return. access without 'it' or 'this'
+// with - doesn't return. access with 'this'
+
+
 
 Concurrency/Asynchronous
 coroutines are not thread. its a set of instructions will be executed in a thread. each coroutine is a Job in kotlin. We can start/join/cancel jobs manaully as well. 
@@ -71,4 +73,14 @@ cancelAndJoin - Cancel and wait for the job to enter Cancelled state.
 for async{} also we can use join to complete the job and also we can use await() to wait and get the result. 
 launch{}.join = async{}.await()
 
+
+open - any class to be inherited, needs to use open
+sealed class - combination of abstract and enum class. 
+            cannot create object
+            any class wants to inherit, needs to be declared inside sealed class only. 
+            set of same members - like enum
+            whereas members of enum are typically singleton objects of enum. must have same signature
+            
+companion object {} - declare static variables and functions
+object SingleTon {} - Singleton object
 
