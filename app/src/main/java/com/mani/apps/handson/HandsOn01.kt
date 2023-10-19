@@ -11,7 +11,9 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.supervisorScope
@@ -20,14 +22,15 @@ import java.lang.Exception
 import java.util.concurrent.Executors
 import kotlin.coroutines.CoroutineContext
 
-fun main(args: Array<String>): Unit = runBlocking{
 
-//    var job = Job.let {
-//        println("Mani")
-//    }
+
+fun main(args: Array<String>): Unit = runBlocking{
 
     println(Dispatchers.Main)
     printValue()
+
+    supervisorScopeFun()
+    coRoutineScopeFun()
 
     loadImage()
     launch{
@@ -68,6 +71,50 @@ fun main(args: Array<String>): Unit = runBlocking{
     }
 
 }
+
+suspend fun supervisorScopeFun() {
+    supervisorScope {
+        val task1 = launch {
+            println("Task 1 started")
+            delay(100)
+            if (true) throw Exception("Oops!")
+            println("Task 1 completed!")
+        }
+        val task2 = launch {
+            println("Task 2 started")
+            delay(1000)
+            println("Task 2 completed!")
+        }
+
+        listOf(task1, task2).joinAll()
+        println("Finished waiting for both tasks")
+    }
+
+    println("Done!")
+    println("=======================================")
+}
+
+suspend fun coRoutineScopeFun() {
+    coroutineScope {
+        val task1 = launch {
+            println("Task 1 started")
+            delay(100)
+            if (true) throw Exception("Oops!")
+            println("Task 1 completed!")
+        }
+        val task2 = launch {
+            println("Task 2 started")
+            delay(1000)
+            println("Task 2 completed!")
+        }
+
+        listOf(task1, task2).joinAll()
+        println("Finished waiting for both tasks")
+    }
+
+    print("Done!")
+}
+
 //if its called inside coroutine, by default its a suspend function.
 //Suspend function can only be called inside coroutine or another suspend function
 fun printValue(){
@@ -77,7 +124,7 @@ fun printValue(){
 @OptIn(DelicateCoroutinesApi::class)
 fun loadImage()  {
 
-    GlobalScope.launch {
+    GlobalScope.launch(Dispatchers.IO) {
             delay(4000)
         println("GlobalScope ${Thread.currentThread().id} ${Thread.currentThread().name} $coroutineContext")
     }
